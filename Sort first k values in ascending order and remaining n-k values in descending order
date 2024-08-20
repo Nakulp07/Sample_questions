@@ -1,0 +1,58 @@
+// A child wants to give their parent a bouquet of flowers for their birthday. To do this, the child asks for help from a friend. The friend gives N flowers numbered 1 to N and instructs that the flowers in the bouquet be arranged in a particular order. The friend instructs that the first K flowers be arranged in order of increasing stem length and the remaining flowers in order of decreasing stem length.
+
+// Write an algorithm to find the final arrangement of the flowers in the bouquet.
+
+
+
+#include<bits/stdc++.h>
+#include<string>
+#include<vector>
+using namespace std;
+
+
+/*
+ * flowerStem is a list of integers representing the length of the flower stems.
+random is an integer representing the number K.
+ */
+vector<int> funcBouquet (vector<int> flowerStem, int random)
+{
+    // Write your code here
+    vector<int>ans;
+    sort(flowerStem.begin(),flowerStem.begin()+random);
+    sort(flowerStem.begin()+random,flowerStem.end(), greater<int>());
+    for(auto &num:flowerStem)
+    {
+        ans.push_back(num);
+    }
+    return ans;
+}
+
+int main()
+{
+    
+	//input for flowerStem
+	int flowerStem_size;
+	cin >> flowerStem_size;
+	vector<int> flowerStem;
+	for ( int idx = 0; idx < flowerStem_size; idx++ )
+	{
+	    int temp;
+	    cin >> temp;
+	    flowerStem.push_back(temp);
+	}
+	//input for random
+	int random;
+	cin >> random;
+	
+	
+    //output
+	vector<int> result = funcBouquet(flowerStem, random);
+	for ( int idx = 0; idx < result.size() - 1; idx++ )
+	{
+	    cout << result[idx] << " ";
+	}
+	cout << result[result.size() - 1];
+	
+    return 0;
+}
+// 5, 4, 6, 2, 1, 3, 8, 9, -1
