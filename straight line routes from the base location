@@ -1,0 +1,63 @@
+// A transportation company wants to begin service in the city of Nazeriana. The company has a base location where it parks all its vehicles. They have identified some pickup locations where the vehicles will collect passengers. Now the company wants to identify the straight line routes from the base location to the pickup locations. They wish to ensure the minimum number of routes while ensuring that all the pickup locations are covered.
+
+// Write an algorithm to help the company identify the minimum number of straight line routes from the base location to the pickup locations, covering every pickup location.
+
+
+#include<bits/stdc++.h>
+#include<vector>
+#include<set>
+using namespace std;
+
+// Function to compute the minimum number of routes
+int minRoutes(vector<vector<int>> pickLoc, int baseX0, int baseY0) {
+    set<pair<int, int>> uniqueSlopes;
+
+    for (const auto& loc : pickLoc) {
+        int dx = loc[0] - baseX0;
+        int dy = loc[1] - baseY0;
+
+        // Reduce the slope (dx, dy) to its simplest form to identify unique lines
+        int g = __gcd(dx, dy);  // Compute the greatest common divisor
+        dx /= g;
+        dy /= g;
+
+        // Ensure the slope is always in the same quadrant (handle signs)
+        if (dy < 0) {
+            dx = -dx;
+            dy = -dy;
+        } else if (dy == 0) {
+            dx = abs(dx); // Handle horizontal lines (dy = 0)
+        }
+
+        uniqueSlopes.insert({dx, dy});
+    }
+
+    return uniqueSlopes.size();
+}
+
+int main() {
+    // Input for pickLoc
+    int pickLoc_row, pickLoc_col;
+    cin >> pickLoc_row >> pickLoc_col;
+
+    vector<vector<int>> pickLoc(pickLoc_row, vector<int>(pickLoc_col));
+    for (int i = 0; i < pickLoc_row; i++) {
+        for (int j = 0; j < pickLoc_col; j++) {
+            cin >> pickLoc[i][j];
+        }
+    }
+
+    // Input for baseX0
+    int baseX0;
+    cin >> baseX0;
+
+    // Input for baseY0
+    int baseY0;
+    cin >> baseY0;
+
+    // Output the minimum number of routes
+    int result = minRoutes(pickLoc, baseX0, baseY0);
+    cout << result;
+
+    return 0;
+}
