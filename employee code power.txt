@@ -1,0 +1,69 @@
+ #include<bits/stdc++.h>
+ using namespace std;
+ #define ll long long 
+// An employee has to send a secret code S to their boss. They design a method to encrypt the code using two key
+//  values N and M. The formula that they uses to develop the encrypted code is shown below:
+//  (((S %10) )%1000000007)
+ll myPow(ll x, ll n) {
+  ll ans = 1.0;
+  long long nn = n;
+  if (nn < 0) nn = -1 * nn;//making power positive 
+  while (nn) {
+    if (nn % 2) {//odd
+      ans = ans * x;
+      nn = nn - 1;
+    } else {//even
+      x = x * x;
+      nn = nn / 2;//divide by 2
+    }
+  }
+  if (n < 0) ans = (double)(1.0) / (double)(ans);
+  return ans;
+}
+ll findUnitDigit(ll a, ll b) {
+    a = a % 10;
+    
+    vector<vector<int>> cycles = {
+        {0},         
+        {1},         
+        {2, 4, 8, 6}, 
+        {3, 9, 7, 1}, 
+        {4, 6},      
+        {5},         
+        {6},         
+        {7, 9, 3, 1}, 
+        {8, 4, 2, 6}, 
+        {9, 1}     
+    };
+
+    vector<int> cycle = cycles[a];
+    ll cycleLength = cycle.size();
+    
+    ll position = (b % cycleLength) - 1;
+    if (position < 0) position += cycleLength;
+
+    return cycle[position];
+}
+ll  findSecretCode (ll secretCode,ll int 
+firstKey,ll secondKey){
+    // (((S %10) )%1000000007)
+    ll digi=findUnitDigit(secretCode,firstKey);
+    ll ans=myPow(digi,secondKey)%1000000007;
+    return ans;
+    
+}
+ int main()
+ {
+    //input for secretCode
+    ll secretCode;
+    cin >> secretCode;
+    //input for firstKey
+    ll firstKey;
+    cin >> firstKey;
+    //input for secondKey
+    ll secondKey;
+    cin >> secondKey;
+    ll result = findSecretCode(secretCode, firstKey, secondKey);
+    cout << result;
+    return 0;
+ }
