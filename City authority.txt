@@ -1,0 +1,73 @@
+#include <iostream>
+#include <vector>
+#include <algorithm>
+// The city authorities conduct a study of the houses in a residential area for a city planning project. The area is depicted
+//  in an aerial view and divided into an N x M grid. If a grid cell contains some part of a house roof, then it is assigned
+//  the value 1; otherwise, the cell represents a vacant lot and is assigned the value 0. Clusters of adjacent grid cells with
+//  value 1 represent a single house. Diagonally placed grids with value 1 do not represent a single house. The area of a
+//  house is the number of 1s that it spans.
+//  Write an algorithm to find the area of the largest house.
+using namespace std;
+
+void dfs(vector<vector<int>>& grid, int i, int j, int& currentArea) {
+    int rows = grid.size();
+    int cols = grid[0].size();
+
+    // Check for bounds and whether the current cell is part of a house (1)
+    if (i < 0 || i >= rows || j < 0 || j >= cols || grid[i][j] == 0) {
+        return;
+    }
+
+    // Mark the cell as visited by setting it to 0
+    grid[i][j] = 0;
+
+    // Increment the current area of the house
+    currentArea++;
+
+    // Explore the four possible directions (up, down, left, right)
+    dfs(grid, i + 1, j, currentArea); // Down
+    dfs(grid, i - 1, j, currentArea); // Up
+    dfs(grid, i, j + 1, currentArea); // Right
+    dfs(grid, i, j - 1, currentArea); // Left
+}
+
+int areaOfLargestHouse(vector<vector<int>> grid) {
+    if (grid.empty() || grid[0].empty()) {
+        return 0;
+    }
+
+    int rows = grid.size();
+    int cols = grid[0].size();
+    int maxArea = 0;
+
+    // Iterate through each cell in the grid
+    for (int i = 0; i < rows; i++) {
+        for (int j = 0; j < cols; j++) {
+            // If the cell is part of a house (1)
+            if (grid[i][j] == 1) {
+                int currentArea = 0;
+                // Perform DFS to calculate the area of this house
+                dfs(grid, i, j, currentArea);
+                // Update the maximum area found
+                maxArea = max(maxArea, currentArea);
+            }
+        }
+    }
+
+    return maxArea;
+}
+
+int main() {
+    // Example usage:
+    vector<vector<int>> grid = {
+        {1, 0, 1, 0, 0},
+        {1, 1, 1, 0, 1},
+        {0, 0, 0, 1, 0},
+        {1, 1, 1, 0, 0}
+    };
+
+    int result = areaOfLargestHouse(grid);
+    cout << "Area of Largest House: " << result << endl;
+
+    return 0;
+}
