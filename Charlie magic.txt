@@ -1,0 +1,18 @@
+// Charlie has a magic mirror that shows the right-rotated versions of a given word. To generate different right rotations
+// of a word, the word is written in a circle in clockwise order and read starting from any given character in clockwise
+// order until all the characters are covered. For example, in the word "sample", if we start with 'p', we get the right
+// rotated word as "plesam".
+// Write an algorithm to output 1 if the word1 is a right rotation of word2 otherwise output -1.
+
+{
+	int  answer = 0;
+	String check = word1 + word1;
+	if(check.contains(word2))
+	{
+		answer = 1;
+	} else
+	{
+		answer = -1;
+	}
+	return answer;
+}

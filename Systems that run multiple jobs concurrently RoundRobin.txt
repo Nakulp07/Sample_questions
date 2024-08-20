@@ -1,0 +1,98 @@
+// Systems that run multiple jobs concurrently on a single CPU have a round-robin scheduling process for choosing which
+//  tasks to run, at what time to run them, and how to break them up. This round-robin scheduling technique runs each
+//  job for a fixed amount of time before switching to the next job. The waiting time for a job is the total time that it
+//  spends waiting to be run. Each job arrives in the queue at a particular time and takes a certain amount of time to run.
+//  When a new job arrives, it is scheduled to run after the jobs that are already waiting for the CPU. Jobs that arrive at
+//  the same time are processed in the order in which they are found in the arrival array. You may assume that the jobs
+//  arrive at a frequency such that the CPU is never idle. A list of job submissions is given.
+//  Write an algorithm to determine the average waiting time for all the jobs using the round-robin scheduling process
+
+#include <iostream>
+#include <vector>
+#include <queue>
+
+
+using namespace std;
+
+struct Job {
+    int arrivalTime;
+    int burstTime;
+    int remainingTime;
+    int waitingTime;
+};
+
+float waitingTimeRR(vector<int> arrivalTimeList, vector<int> runTimeList, int timeSlot) {
+    int n = arrivalTimeList.size();
+    vector<Job> jobs(n);
+    float totalWaitingTime = 0.0;
+
+    for (int i = 0; i < n; ++i) {
+        jobs[i] = {arrivalTimeList[i], runTimeList[i], runTimeList[i], 0};
+    }
+
+    queue<int> q;
+    int currentTime = 0;
+    int index = 0;
+    int completedJobs = 0;
+
+    while (completedJobs < n) {
+        while (index < n && jobs[index].arrivalTime <= currentTime) {
+            q.push(index);
+            index++;
+        }
+
+        if (!q.empty()) {
+            int currentJob = q.front();
+            q.pop();
+
+            int timeSpent = min(timeSlot, jobs[currentJob].remainingTime);
+            jobs[currentJob].remainingTime -= timeSpent;
+            currentTime += timeSpent;
+
+            while (index < n && jobs[index].arrivalTime <= currentTime) {
+                q.push(index);
+                index++;
+            }
+
+            if (jobs[currentJob].remainingTime > 0) {
+                q.push(currentJob);
+            } else {
+                jobs[currentJob].waitingTime = currentTime - jobs[currentJob].arrivalTime - jobs[currentJob].burstTime;
+                totalWaitingTime += jobs[currentJob].waitingTime;
+                completedJobs++;
+            }
+        } else {
+            currentTime++;
+        }
+    }
+
+    return totalWaitingTime / n;
+}
+
+int main() {
+    // Input for arrivalTimeList
+    int arrivalTimeList_size;
+    cin >> arrivalTimeList_size;
+    vector<int> arrivalTimeList(arrivalTimeList_size);
+    for (int idx = 0; idx < arrivalTimeList_size; idx++) {
+        cin >> arrivalTimeList[idx];
+    }
+
+    // Input for runTimeList
+    int runTimeList_size;
+    cin >> runTimeList_size;
+    vector<int> runTimeList(runTimeList_size);
+    for (int idx = 0; idx < runTimeList_size; idx++) {
+        cin >> runTimeList[idx];
+    }
+
+    // Input for timeSlot
+    int timeSlot;
+    cin >> timeSlot;
+
+    // Calculate and output the result
+    float result = waitingTimeRR(arrivalTimeList, runTimeList, timeSlot);
+    cout << "Average Waiting Time: " << result << endl;
+
+    return 0;
+}

@@ -1,0 +1,46 @@
+#include <iostream>
+#include <cmath>
+
+using namespace std;
+
+// A student must solve an entire workbook of problems related to finding the area of intersection of two circles. Because
+//  the problems are all very similar, the student decides to write a program that can solve all these similar problems.
+
+double areaOfIntersection(int centerX1, int centerY1, int r1, int centerX2, int centerY2, int r2) {
+    double Pi = 3.14159265358979323846;
+    double d, alpha, beta, a1, a2;
+    double area;
+
+    // Calculate the Euclidean distance between the centers of the two circles
+    d = sqrt((centerX2 - centerX1) * (centerX2 - centerX1) + (centerY2 - centerY1) * (centerY2 - centerY1));
+
+    // If the circles are too far apart to intersect
+    if (d >= r1 + r2) {
+        area = 0;
+    }
+    // If one circle is completely inside the other
+    else if (d <= fabs(r1 - r2)) {
+        area = Pi * min(r1, r2) * min(r1, r2);
+    }
+    // General case where the circles partially intersect
+    else {
+        alpha = acos((r1 * r1 + d * d - r2 * r2) / (2 * r1 * d)) * 2;
+        beta = acos((r2 * r2 + d * d - r1 * r1) / (2 * r2 * d)) * 2;
+        a1 = 0.5 * beta * r2 * r2 - 0.5 * r2 * r2 * sin(beta);
+        a2 = 0.5 * alpha * r1 * r1 - 0.5 * r1 * r1 * sin(alpha);
+        area = a1 + a2;
+    }
+
+    return area;
+}
+
+int main() {
+    // Example usage:
+    int centerX1 = 0, centerY1 = 0, r1 = 2;
+    int centerX2 = 3, centerY2 = 0, r2 = 2;
+
+    double result = areaOfIntersection(centerX1, centerY1, r1, centerX2, centerY2, r2);
+    cout << "Area of Intersection: " << result << endl;
+
+    return 0;
+}

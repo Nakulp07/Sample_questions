@@ -1,0 +1,44 @@
+//  An agent sends a message to headquarters containing the details of his project. He sends one soft copy to the
+//  agency’s computer (P) and sends one hard copy by fax to Roger, the technical head of the agency (Q). During the
+//  transmission noise in the network causes some bits of the data message P to get distorted. However, we know that
+//  Roger always matches the binary values of both messages and checks whether he can convert the message P to
+//  message Q by flipping the minimum number of bits.
+//  Write an algorithm to help Roger find the minimum number of bits that must be flipped to convert message P to
+//  message Q.
+#include <iostream>
+using namespace std;
+
+int flippedBits(int num1, int num2) {
+    // XOR the two numbers to find differing bits
+    int xor_result = num1 ^ num2;
+
+    // Initialize a count to keep track of differing bits
+    int count = 0;
+
+    // Count the set bits (1s) in the XOR result
+    while (xor_result) {
+        // Increment the count if the least significant bit is 1
+        count += xor_result & 1;
+
+        // Right shift the XOR result to check the next bit
+        xor_result >>= 1;
+    }
+
+    return count;
+}
+
+int main() {
+    // Input for num1
+    int num1;
+    cin >> num1;
+
+    // Input for num2
+    int num2;
+    cin >> num2;
+
+    // Calculate and print the minimum number of bits that must be flipped
+    int result = flippedBits(num1, num2);
+    cout << result;
+
+    return 0;
+}

@@ -1,0 +1,75 @@
+#include <iostream>
+#include <vector>
+#include <algorithm>
+
+using namespace std;
+
+// Max does not like any of the line segments that he sees on the X-axis. Today his brother drew N line segments on it.
+//  Max has a special marker that can erase all the line segments that pass through a point on the X-axis when he places
+//  the marker on that point. For example, he wants to erase two line segments — one with endpoints (1,0) and (4,0),
+//  and another with endpoints (3,0) and (7,0). He can erase both lines at once by placing the marker either at point
+//  (3,0) or (4,0) but he cannot do so if he places the marker anywhere else.
+//  Write an algorithm to find the minimum number of times Max must use the marker to clear the X-axis
+
+int markerPlaced(vector<int>& startX, vector<int>& endX) {
+    int n = startX.size();
+    vector<pair<int, int>> segments;
+
+    // Pair the start and end points and store them in the segments vector
+    for (int i = 0; i < n; i++) {
+        segments.push_back({startX[i], endX[i]});
+    }
+
+    // Sort the segments by their starting point, and in case of a tie, by their ending point
+    sort(segments.begin(), segments.end(), [](pair<int, int>& a, pair<int, int>& b) {
+        if (a.first != b.first) {
+            return a.first < b.first;
+        } else {
+            return a.second < b.second;
+        }
+    });
+
+    int count = 0;
+    int end = segments[0].second;
+
+    for (int i = 1; i < n; i++) {
+        int tempStart = segments[i].first;
+        int tempEnd = segments[i].second;
+
+        if (tempStart <= end) {
+            end = min(end, tempEnd);
+        } else {
+            count++;
+            end = tempEnd;
+        }
+    }
+
+    return count + 1;
+}
+
+int main() {
+    // Input for startX
+    int startX_size;
+    cin >> startX_size;
+    vector<int> startX;
+    for (int idx = 0; idx < startX_size; idx++) {
+        int temp;
+        cin >> temp;
+        startX.push_back(temp);
+    }
+
+    // Input for endX
+    int endX_size;
+    cin >> endX_size;
+    vector<int> endX;
+    for (int idx = 0; idx < endX_size; idx++) {
+        int temp;
+        cin >> temp;
+        endX.push_back(temp);
+    }
+
+    // Calculate and print the result
+    int result = markerPlaced(startX, endX);
+    cout << result;
+    return 0;
+}
