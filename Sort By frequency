@@ -1,0 +1,54 @@
+// Design a way to sort the list of positive integers in the descending order according to frequency of the elements. The
+//  elements with higher frequency come before those with lower frequency. Elements with the same frequency come in
+//  the same order as they appear in the given list.
+
+#include<iostream>
+#include<vector>
+#include<unordered_map>
+#include<algorithm>
+using namespace std;
+
+// Function to sort elements by frequency
+vector<int> freqSort(vector<int> listEle) {
+    unordered_map<int, int> freq_count;
+
+    // Count the frequency of each element
+    for (int ele : listEle) {
+        freq_count[ele]++;
+    }
+
+    // Custom comparator for sorting
+    auto comp = [&](int a, int b) {
+        if (freq_count[a] != freq_count[b]) {
+            return freq_count[a] > freq_count[b];
+        } else {
+            // If frequencies are the same, maintain the original order
+            return find(listEle.begin(), listEle.end(), a) < find(listEle.begin(), listEle.end(), b);
+        }
+    };
+
+    // Sort the list based on the custom comparator
+    stable_sort(listEle.begin(), listEle.end(), comp);
+
+    return listEle;
+}
+
+int main() {
+    // Input for listEle
+    int listEle_size;
+    cin >> listEle_size;
+    vector<int> listEle;
+    for (int idx = 0; idx < listEle_size; idx++) {
+        int temp;
+        cin >> temp;
+        listEle.push_back(temp);
+    }
+
+    // Output
+    vector<int> result = freqSort(listEle);
+    for (int idx = 0; idx < result.size(); idx++) {
+        cout << result[idx] << " ";
+    }
+
+    return 0;
+}
