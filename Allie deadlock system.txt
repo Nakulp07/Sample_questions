@@ -1,0 +1,72 @@
+#include <iostream>
+#include <vector>
+#include <unordered_map>
+#include <algorithm>
+#include <tuple>
+
+// Allie is working on a system that can allocate resources to the applications in a manner efficient enough to allow the
+//  maximum number of applications to be executed. There are N number of applications and each application is identified
+//  by a unique integer ID (1 to N). Only M types of resources are available with a unique resourceID. Each application
+//  sends a request message to the system. The request message includes the information regarding the request time,
+//  the execution ending time, and the type of resource required for execution. Time is in the MMSS format where MM is
+//  minutes and SS is seconds.
+//  If more than one application sends a request at the same time then only one application will be approved by the
+//  system. The denied requests are automatically destroyed by the system. When approving the request, the system
+//  ensures that the request will be granted to the application in a way that will maximize the number of executions. The
+//  system can execute only one application at a time with a given resource. It will deny all other requests for that
+//  resource until the previous application has finished. Allie wants to know the maximum number of applications that
+//  have been executed successfully
+using namespace std;
+
+int solve(vector<tuple<int, int, int>> &tasks) {
+    unordered_map<int, vector<pair<int, int>>> resources;
+
+    // Group tasks by their resource index (i)
+    for (const auto &task : tasks) {
+        int s, e, i;
+        tie(s, e, i) = task;
+        resources[i].emplace_back(s, e);
+    }
+
+    // Sort each resource's tasks by their end time (e)
+    for (auto &resource : resources) {
+        sort(resource.second.begin(), resource.second.end(), [](const pair<int, int> &a, const pair<int, int> &b) {
+            return a.second < b.second;
+        });
+    }
+
+    int res = 0;
+
+    // Process each resource's tasks to count non-overlapping intervals
+    for (const auto &resource : resources) {
+        int far = 0;
+        for (const auto &task : resource.second) {
+            int s = task.first;
+            int e = task.second;
+            if (far <= s) {
+                far = e;
+                res++;
+            }
+        }
+    }
+
+    return res;
+}
+
+int main() {
+    // Test Case 1
+    vector<tuple<int, int, int>> tasks1 = {{1200, 1250, 1}, {1210, 1220, 1}, {1225, 1230, 1},
+                                           {1330, 1345, 2}, {1330, 1340, 2}, {1340, 1345, 2}};
+    cout << "Result for tasks1: " << solve(tasks1) << endl;
+
+    // Test Case 2
+    vector<tuple<int, int, int>> tasks2 = {{1000, 1020, 3}, {1020, 1030, 3}, {1030, 1040, 3}, {1010, 1045, 2}};
+    cout << "Result for tasks2: " << solve(tasks2) << endl;
+
+    // Test Case 3
+    vector<tuple<int, int, int>> tasks3 = {{1200, 1230, 1}, {1120, 1125, 2}, {1015, 1230, 1},
+                                           {1100, 1230, 1}, {1200, 1230, 3}};
+    cout << "Result for tasks3: " << solve(tasks3) << endl;
+
+    return 0;
+}
